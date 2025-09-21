@@ -47,6 +47,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IDiaryRepository, DiaryRepository>();
+builder.Services.AddScoped<IEntryRepository, EntryRepository>();
+builder.Services.AddScoped<IMemoRepository, MemoRepository>();
+
 
 builder.Services.AddAuthorization();
 
