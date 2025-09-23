@@ -48,7 +48,8 @@ public class DiaryController(
             Title = createDiaryDto.Title,
             AppUserId = userId!,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            IsPublic = createDiaryDto.IsPublic
         };
 
         var createdDiary = await diaryRepository.CreateDiaryAsync(diary, userId!);
@@ -67,6 +68,7 @@ public class DiaryController(
 
         // TODO: Fix this and add unit of work pattern
         diary.Title = updateDiaryDto.Title;
+        diary.IsPublic = updateDiaryDto.IsPublic;
 
         var result = await diaryRepository.UpdateDiaryAsync(id, diary, userId!);
 

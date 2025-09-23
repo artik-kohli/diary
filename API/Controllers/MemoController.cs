@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using API.DTOs;
+using API.Entities;
 using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -40,12 +41,15 @@ public class MemoController(
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var memo = new Entities.Memo
+        var memo = new Memo
         {
             Content = createMemoDto.Content,
             AppUserId = userId!,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = createMemoDto.CreatedAt,
+            UpdatedAt = DateTime.UtcNow,
+            MediaUrls = createMemoDto.MediaUrls,
+            Title = createMemoDto.Title,
+            IsPublic = createMemoDto.IsPublic
         };
 
         var createdMemo = await memoRepository.CreateMemoAsync(memo, userId!);
@@ -64,7 +68,10 @@ public class MemoController(
 
         memo.Title = updateMemoDto.Title ?? memo.Title;
         memo.Content = updateMemoDto.Content;
+        memo.CreatedAt = updateMemoDto.CreatedAt ?? memo.CreatedAt;
+        memo.MediaUrls = updateMemoDto.MediaUrls;
         memo.UpdatedAt = DateTime.UtcNow;
+        memo.IsPublic = updateMemoDto.IsPublic ?? memo.IsPublic;
 
         var result = await memoRepository.UpdateMemoAsync(memoId, memo, userId!);
 

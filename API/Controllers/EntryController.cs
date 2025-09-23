@@ -45,8 +45,9 @@ public class EntryController(
         {
             Content = createEntryDto.Content,
             DiaryId = diaryId,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = createEntryDto.CreatedAt,
+            UpdatedAt = DateTime.UtcNow,
+            MediaUrls = createEntryDto.MediaUrls
         };
 
         await entryRepository.CreateEntryAsync(diaryId, entry, userId!);
@@ -64,6 +65,8 @@ public class EntryController(
         if (entry == null) return NotFound();
 
         entry.Content = updateEntryDto.Content;
+        entry.CreatedAt = updateEntryDto.CreatedAt ?? entry.CreatedAt;
+        entry.MediaUrls = updateEntryDto.MediaUrls;
         entry.UpdatedAt = DateTime.UtcNow;
 
         await entryRepository.UpdateEntryAsync(entryId, entry, userId!);
