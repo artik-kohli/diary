@@ -2,6 +2,7 @@ using System;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,9 +50,16 @@ public class AccountController(
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        var user = await userManager.FindByNameAsync(loginDto.Username);
+        AppUser? user = null;
 
-        if (user == null) return Unauthorized("Invalid username or password");
+        if (loginDto.Username.Contains('@'))
+        {
+            user = await userManager.FindByEmailAsync(loginDto.Username);
+        }
+
+        user ??= await userManager.FindByNameAsync(loginDto.Username);
+
+        if (user == null) return Unauthorized("Invalid username/email or password");
 
         var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -67,5 +75,13 @@ public class AccountController(
             DisplayName = user.DisplayName!,
             Token = token
         };
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public ActionResult Logout()
+    {
+        // await signInManager.SignOutAsync();
+        return Ok();
     }
 }

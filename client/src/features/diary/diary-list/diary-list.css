@@ -1,0 +1,75 @@
+/* Enhanced card hover effects */
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Filter button styling */
+.filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .filter {
+        justify-content: flex-start;
+    }
+}
+
+/* Line clamp utility for card titles */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Smooth transitions for all interactive elements */
+.card,
+.btn,
+.badge {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Enhanced loading animation */
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+    .grid {
+        gap: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Filter button enhancements */
+.filter .btn {
+    border: 1px solid transparent;
+}
+
+.filter .btn:hover {
+    border-color: hsl(var(--primary) / 0.3);
+}
+
+.filter .btn-active {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-content));
+    border-color: hsl(var(--primary));
+}

@@ -1,0 +1,360 @@
+<div class="min-h-screen bg-base-100">
+    <!-- Loading State -->
+    @if (loading()) {
+    <div class="flex justify-center items-center min-h-screen">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+    <div class="container mx-auto px-4 py-8">
+        <div class="alert alert-error">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ error() }}</span>
+            <button class="btn btn-sm btn-ghost" (click)="goBack()">Go Back</button>
+        </div>
+    </div>
+    }
+
+    <!-- Main Content -->
+    @if (diary() && !loading()) {
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-primary/10 via-secondary/5 to-accent/10 border-b border-base-200">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <!-- Title and Info -->
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <button class="btn btn-ghost btn-sm" (click)="goBack()">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back
+                        </button>
+                        <div class="breadcrumbs text-sm">
+                            <ul>
+                                <li><a (click)="goBack()" class="link">Diaries</a></li>
+                                <li>{{ diary()!.title }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h1 class="text-3xl font-bold text-base-content mb-2">{{ diary()!.title }}</h1>
+
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/70">
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>{{ entryStats().total }} entries</span>
+                        </div>
+
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3M8 7v8a2 2 0 002 2h4a2 2 0 002-2V7" />
+                            </svg>
+                            <span>{{ formatDate(diary()!.updatedAt) }}</span>
+                        </div>
+
+                        <div class="badge badge-sm" [class]="diary()!.isPublic ? 'badge-success' : 'badge-ghost'">
+                            {{ diary()!.isPublic ? 'Public' : 'Private' }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn btn-primary" (click)="openNewEntryForm()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        New Entry
+                    </button>
+
+                    <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-ghost">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                            Options
+                        </div>
+                        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                            <li><a (click)="openEditDiaryForm()">Edit Title</a></li>
+                            <li><a (click)="togglePublicStatus()">
+                                    {{ diary()!.isPublic ? 'Make Private' : 'Make Public' }}
+                                </a></li>
+                            <li><a (click)="openShareDialog()">Share Settings</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search Section -->
+    <div class="container mx-auto px-4 py-6 border-b border-base-200">
+        <div class="flex flex-col lg:flex-row gap-4">
+            <!-- Search Bar -->
+            <div class="flex-1">
+                <div class="join w-full">
+                    <div class="join-item flex-1">
+                        <label class="input input-bordered flex items-center gap-2 join-item w-full">
+                            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input type="text" class="grow" placeholder="Search entries..." [(ngModel)]="searchTerm" />
+                        </label>
+                    </div>
+
+                    <div class="join-item">
+                        <input type="date" class="input input-bordered join-item" [(ngModel)]="selectedDate"
+                            title="Filter by date" />
+                    </div>
+
+                    @if (searchTerm() || selectedDate()) {
+                    <button class="btn btn-outline join-item" (click)="clearSearch()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- View Controls -->
+            <div class="flex items-center gap-2">
+                <!-- Sort Dropdown -->
+                <select class="select select-bordered" [(ngModel)]="sortBy">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="alphabetical">A-Z</option>
+                </select>
+
+                <!-- View Mode Toggle -->
+                <div class="join">
+                    <button class="btn join-item" [class.btn-active]="viewMode() === 'grid'"
+                        (click)="viewMode.set('grid')">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        </svg>
+                    </button>
+                    <button class="btn join-item" [class.btn-active]="viewMode() === 'list'"
+                        (click)="viewMode.set('list')">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Info -->
+        @if (searchTerm() || selectedDate()) {
+        <div class="mt-4 text-sm text-base-content/70">
+            Showing {{ entryStats().filtered }} of {{ entryStats().total }} entries
+        </div>
+        }
+    </div>
+
+    <!-- Entries Section -->
+    <div class="container mx-auto px-4 py-6">
+        @if (filteredEntries().length === 0) {
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="bg-base-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-base-content mb-2">
+                @if (searchTerm() || selectedDate()) {
+                No Matching Entries
+                } @else {
+                No Entries Yet
+                }
+            </h3>
+            <p class="text-base-content/60 mb-6">
+                @if (searchTerm() || selectedDate()) {
+                Try adjusting your search or date filter
+                } @else {
+                Start writing your first entry in this diary
+                }
+            </p>
+            @if (!searchTerm() && !selectedDate()) {
+            <button class="btn btn-primary" (click)="openNewEntryForm()">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Create First Entry
+            </button>
+            }
+        </div>
+        } @else {
+        <!-- Grid View -->
+        @if (viewMode() === 'grid') {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (entry of filteredEntries(); track entry.id) {
+            <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-base-200 hover:border-primary/30"
+                (click)="openEntry(entry)">
+                <div class="card-body p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="text-sm text-base-content/60">
+                            {{ formatDate(entry.createdAt) }}
+                        </div>
+                        <div class="text-xs text-base-content/40">
+                            {{ formatTime(entry.createdAt) }}
+                        </div>
+                    </div>
+
+                    <div class="text-base-content line-clamp-4 mb-4">
+                        {{ getEntryPreview(entry.content, 200) }}
+                    </div>
+
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary btn-sm">
+                            Read More
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- List View -->
+        @if (viewMode() === 'list') {
+        <div class="space-y-4">
+            @for (entry of filteredEntries(); track entry.id) {
+            <div class="card bg-base-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border border-base-200 hover:border-primary/30"
+                (click)="openEntry(entry)">
+                <div class="card-body p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="text-sm font-medium text-base-content/70">
+                            {{ formatDate(entry.createdAt) }} at {{ formatTime(entry.createdAt) }}
+                        </div>
+                        <button class="btn btn-ghost btn-xs">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="text-base-content line-clamp-3">
+                        {{ getEntryPreview(entry.content, 300) }}
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+        }
+    </div>
+    }
+
+    <!-- New Entry Modal -->
+    @if (showNewEntryForm()) {
+    <div class="modal modal-open">
+        <div class="modal-box w-11/12 max-w-2xl">
+            <h3 class="font-bold text-lg mb-4">New Entry</h3>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">What's on your mind?</span>
+                </label>
+                <textarea class="textarea textarea-bordered h-64" placeholder="Write your thoughts here..."
+                    [(ngModel)]="newEntryContent"></textarea>
+            </div>
+
+            <div class="modal-action">
+                <button class="btn btn-ghost" (click)="closeNewEntryForm()">Cancel</button>
+                <button class="btn btn-primary" (click)="createEntry()" [disabled]="!newEntryContent().trim()">
+                    Create Entry
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Edit Diary Modal -->
+    @if (showEditDiaryForm()) {
+    <div class="modal modal-open">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Edit Diary</h3>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Diary Title</span>
+                </label>
+                <input type="text" class="input input-bordered" placeholder="Enter diary title"
+                    [(ngModel)]="editDiaryTitle" />
+            </div>
+
+            <div class="modal-action">
+                <button class="btn btn-ghost" (click)="closeEditDiaryForm()">Cancel</button>
+                <button class="btn btn-primary" (click)="updateDiary()"
+                    [disabled]="!editDiaryTitle().trim() || editDiaryTitle() === diary()?.title">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Share Dialog -->
+    @if (showShareDialog()) {
+    <div class="modal modal-open">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Share Settings</h3>
+
+            <div class="space-y-4">
+                <div class="form-control">
+                    <label class="cursor-pointer label">
+                        <span class="label-text">Make diary public</span>
+                        <input type="checkbox" class="toggle toggle-primary" [checked]="diary()!.isPublic"
+                            (change)="togglePublicStatus()" />
+                    </label>
+                    <div class="label">
+                        <span class="label-text-alt text-base-content/60">
+                            Public diaries can be discovered and read by other users
+                        </span>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-sm">
+                        Share specific users feature coming soon!
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-action">
+                <button class="btn btn-ghost" (click)="closeShareDialog()">Close</button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

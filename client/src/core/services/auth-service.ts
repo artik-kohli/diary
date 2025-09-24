@@ -38,12 +38,12 @@ export class AuthService {
   }
 
   logout() {
-    this.http.post(this.baseUrl + 'account/logout', {}, {withCredentials: true}).subscribe({
-      next: () => {
-        localStorage.removeItem('currentUser');
-        this.currentUser.set(null);
-      }
-    })
+    // Clear user state immediately (JWT is stateless)
+    localStorage.removeItem('currentUser');
+    this.currentUser.set(null);
+
+    // Fire-and-forget call to server (optional cleanup)
+    this.http.post(this.baseUrl + 'account/logout', {}).subscribe();
   }
 
   getToken() {

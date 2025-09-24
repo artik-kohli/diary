@@ -1,0 +1,166 @@
+<div class="min-h-screen bg-base-100">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-primary/10 via-secondary/5 to-accent/10 py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-base-content mb-2">My Diaries</h1>
+                    <p class="text-base-content/70">Organize and manage your personal journals</p>
+                </div>
+                <button class="btn btn-primary btn-lg" (click)="createNewDiary()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    New Diary
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Filter Section -->
+        <div class="filter mb-8">
+            <input class="btn filter-reset" type="radio" name="diary-filter" aria-label="×" (click)="setFilter('my')" />
+            <input class="btn" type="radio" name="diary-filter" [class.btn-active]="activeFilter() === 'my'"
+                aria-label="My Diaries ({{ counts().my }})" (click)="setFilter('my')" />
+            <input class="btn" type="radio" name="diary-filter" [class.btn-active]="activeFilter() === 'shared'"
+                aria-label="Shared with Me ({{ counts().shared }})" (click)="setFilter('shared')" />
+            <input class="btn" type="radio" name="diary-filter" [class.btn-active]="activeFilter() === 'public'"
+                aria-label="Public ({{ counts().public }})" (click)="setFilter('public')" />
+        </div>
+
+        <!-- Loading State -->
+        @if (loading()) {
+        <div class="flex justify-center items-center py-12">
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (error()) {
+        <div class="alert alert-error mb-6">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ error() }}</span>
+            <button class="btn btn-sm btn-ghost" (click)="loadDiaries()">Retry</button>
+        </div>
+        }
+
+        <!-- Empty State for Shared Diaries -->
+        @if (activeFilter() === 'shared' && !loading()) {
+        <div class="text-center py-12">
+            <div class="bg-base-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-base-content mb-2">No Shared Diaries</h3>
+            <p class="text-base-content/60">Diaries shared with you will appear here</p>
+        </div>
+        }
+
+        <!-- Diary Grid -->
+        @if (!loading() && filteredDiaries().length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (diary of filteredDiaries(); track diary.id) {
+            <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-base-200 hover:border-primary/30"
+                (click)="openDiary(diary)">
+                <div class="card-body p-6">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="card-title text-lg font-semibold line-clamp-2 flex-1">
+                            {{ diary.title }}
+                        </h3>
+                        @if (diary.isPublic) {
+                        <div class="badge badge-success badge-sm ml-2">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Public
+                        </div>
+                        } @else {
+                        <div class="badge badge-ghost badge-sm ml-2">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Private
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex items-center gap-4 text-sm text-base-content/60 mb-4">
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>{{ getEntryCount(diary) }} entries</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3M8 7v8a2 2 0 002 2h4a2 2 0 002-2V7" />
+                            </svg>
+                            <span>{{ formatDate(diary.updatedAt) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary btn-sm">
+                            Open
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Empty State for No Diaries -->
+        @if (!loading() && filteredDiaries().length === 0 && activeFilter() !== 'shared') {
+        <div class="text-center py-12">
+            <div class="bg-base-200 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-base-content mb-2">
+                @if (activeFilter() === 'my') {
+                No Personal Diaries
+                } @else {
+                No Public Diaries
+                }
+            </h3>
+            <p class="text-base-content/60 mb-6">
+                @if (activeFilter() === 'my') {
+                Start your journaling journey by creating your first diary
+                } @else {
+                No public diaries are available at the moment
+                }
+            </p>
+            @if (activeFilter() === 'my') {
+            <button class="btn btn-primary" (click)="createNewDiary()">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Create Your First Diary
+            </button>
+            }
+        </div>
+        }
+    </div>
+</div>

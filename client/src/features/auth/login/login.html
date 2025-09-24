@@ -1,0 +1,26 @@
+<div class="flex min-h-screen items-center justify-center bg-base-200 px-4">
+    <div class="w-full max-w-md rounded-lg bg-base-100 p-6 shadow-xl">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-primary">Welcome Back!</h2>
+            <p class="mt-2 text-sm text-base-content/70">Log in to access your diaries and memos</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full">
+            <app-text-input label="Username" formControlName="username" class="mt-2" />
+            <app-text-input label="Password" formControlName="password" class="mt-2" type="password" />
+            <div class="flex items-center justify-center">
+                <button 
+                    class="btn btn-primary" 
+                    [disabled]="isSubmitting() || !loginForm.valid"
+                    (click)="onSubmit()"
+                >
+                    @if (isSubmitting()) {
+                        <span class="loading loading-spinner"></span>
+                    } @else {
+                        <span>Log In</span>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

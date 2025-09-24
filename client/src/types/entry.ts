@@ -1,7 +1,7 @@
 export interface Entry {
     id: number;
     content: string;
-    createAt: string;
+    createdAt: string;
     updatedAt: string;
     mediaUrls?: string[];
     diaryId: number;

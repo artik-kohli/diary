@@ -1,0 +1,141 @@
+/* Line clamp utilities */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Enhanced card hover effects */
+.card:hover {
+    transform: translateY(-1px);
+}
+
+/* Smooth transitions */
+.card,
+.btn,
+.badge,
+.input,
+.textarea,
+.select {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Search bar styling */
+.join .input {
+    border-radius: 0;
+}
+
+.join .input:first-child {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.join .input:last-child,
+.join .btn:last-child {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+/* View toggle buttons */
+.join .btn {
+    border-radius: 0;
+}
+
+.join .btn:first-child {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.join .btn:last-child {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+/* Entry grid responsive adjustments */
+@media (max-width: 768px) {
+    .grid {
+        gap: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Modal enhancements */
+.modal-box {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Textarea styling */
+.textarea {
+    resize: vertical;
+    min-height: 200px;
+}
+
+/* Dropdown styling */
+.dropdown-content {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Badge enhancements */
+.badge {
+    font-weight: 500;
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 0.75rem;
+}
+
+/* Stats section */
+.stats {
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading spinner */
+.loading-spinner {
+    color: hsl(var(--primary));
+}
+
+/* Breadcrumbs styling */
+.breadcrumbs a:hover {
+    color: hsl(var(--primary));
+}
+
+/* Enhanced focus states */
+.input:focus,
+.textarea:focus,
+.select:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+}
+
+/* Button enhancements */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Toggle styling */
+.toggle:checked {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+}

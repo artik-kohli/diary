@@ -12,7 +12,7 @@ export class DiaryService {
   private baseUrl = environment.apiUrl
 
   getDiaries() {
-    return this.http.get<Diary[]>(this.baseUrl + 'diaries');
+    return this.http.get<Diary[]>(this.baseUrl + 'diary');
   }
 
   getDiary(id: number) {
@@ -26,7 +26,7 @@ export class DiaryService {
   updateDiary(id: number, diary: UpdateDiary) {
     return this.http.put<Diary>(this.baseUrl + `diary/${id}`, diary);
   }
-  
+
   deleteDiary(id: number) {
     return this.http.delete(this.baseUrl + `diary/${id}`);
   }

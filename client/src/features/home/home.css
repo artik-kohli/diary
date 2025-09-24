@@ -1,0 +1,32 @@
+/* Enhanced card hover effects */
+.card:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Smooth icon animations */
+.card:hover svg {
+    transform: translateX(2px);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Enhanced gradient transitions */
+.bg-gradient-to-br {
+    background-attachment: fixed;
+}
+
+/* Badge styling */
+.badge {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive text scaling */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+}
