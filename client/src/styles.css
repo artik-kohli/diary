@@ -1,5 +1,12 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
-    themes: all;
+    themes: light;
     exclude: rootscrollgutter;
 }
+
+/* Import our custom theme system */
+@import "./styles/themes.css";
+
+/* Import shared component utilities */
+@import "./styles/shared-components.css";

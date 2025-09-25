@@ -1,0 +1,14 @@
+<button class="btn" [class.btn-primary]="variant() === 'primary'" [class.btn-secondary]="variant() === 'secondary'"
+    [class.btn-accent]="variant() === 'accent'" [class.btn-ghost]="variant() === 'ghost'"
+    [class.btn-outline]="variant() === 'outline'" [class.btn-sm]="size() === 'sm'" [class.btn-lg]="size() === 'lg'"
+    [class.btn-xl]="size() === 'xl'" [class.btn-wide]="wide()" [class.loading]="loading()"
+    [disabled]="disabled() || loading()" (click)="onClick.emit()">
+    @if (!loading()) {
+    <ng-content select="[slot=icon-left]"></ng-content>
+    <span>{{ text() }}</span>
+    <ng-content select="[slot=icon-right]"></ng-content>
+    } @else {
+    <span class="loading loading-spinner loading-sm"></span>
+    {{ loadingText() || 'Loading...' }}
+    }
+</button>

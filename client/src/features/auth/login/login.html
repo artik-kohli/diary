@@ -9,17 +9,9 @@
             <app-text-input label="Username" formControlName="username" class="mt-2" />
             <app-text-input label="Password" formControlName="password" class="mt-2" type="password" />
             <div class="flex items-center justify-center">
-                <button 
-                    class="btn btn-primary" 
-                    [disabled]="isSubmitting() || !loginForm.valid"
-                    (click)="onSubmit()"
-                >
-                    @if (isSubmitting()) {
-                        <span class="loading loading-spinner"></span>
-                    } @else {
-                        <span>Log In</span>
-                    }
-                </button>
+                <app-action-button text="Log In" variant="primary" [disabled]="isSubmitting() || !loginForm.valid"
+                    [loading]="isSubmitting()" (onClick)="onSubmit()">
+                </app-action-button>
             </div>
         </form>
     </div>

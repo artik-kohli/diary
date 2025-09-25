@@ -1,85 +1,101 @@
-<div class="min-h-screen bg-gradient-to-br {{ backgroundGradient() }} transition-all duration-1000 ease-in-out">
+<div class="min-h-screen transition-all duration-1000 ease-in-out">
     <!-- Hero Section with Greeting -->
     <div class="hero min-h-[55vh] text-center">
         <div class="hero-content">
             <div class="max-w-md">
-                <h1 class="text-5xl font-bold mb-4 text-base-content">
+                <h1 class="text-5xl font-bold mb-4">
                     {{ greeting() }},
-                    <span class="text-primary">{{ user()?.displayName || user()?.username }}</span>!
+                    <span class="gradient-text">{{ user()?.displayName || user()?.username }}</span>!
                 </h1>
-                <p class="text-lg text-base-content/80 mb-6">
+                <p class="text-lg text-muted mb-6">
                     Welcome back to your personal space. What would you like to explore today?
                 </p>
-                <div class="badge badge-lg badge-outline">
-                    {{ currentTime().toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                    }) }}
+                <app-chip
+                    [text]="currentTime().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })"
+                    variant="info" size="lg">
+                </app-chip>
+                <div class="mt-4">
+                    <app-chip [text]="currentTheme().name" size="sm"></app-chip>
+                </div>
+                <div class="mt-4">
+                    <app-action-button text="Show Welcome Message" variant="ghost" size="sm"
+                        (onClick)="showWelcomeToast()">
+                    </app-action-button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Navigation Cards -->
-    <div class="container mx-auto px-4 pb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <!-- Diary Card -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:scale-105"
-                (click)="navigateToDiaries()">
-                <div class="card-body text-center">
-                    <div class="flex justify-center mb-4">
-                        <div class="bg-primary/10 p-4 rounded-full">
-                            <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="container mx-auto px-6 pb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Diaries Card -->
+            <app-themed-card (onClick)="navigateToDiaries()">
+                <div class="text-center">
+                    <div class="avatar mb-4">
+                        <div class="w-16 rounded-full gradient-bg p-3 shadow-glow">
+                            <svg class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                         </div>
                     </div>
-                    <h2 class="card-title text-2xl justify-center mb-2">My Diaries</h2>
-                    <p class="text-base-content/70 mb-6">
-                        Capture your thoughts, experiences, and memories in your personal diaries.
+                    <h2 class="text-2xl font-bold mb-2">My Diaries</h2>
+                    <p class="text-muted mb-4">Capture your thoughts, experiences, and memories in your personal diaries
                     </p>
-                    <div class="card-actions justify-center">
-                        <button class="btn btn-primary btn-wide">
-                            Explore Diaries
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    </div>
+                    <app-action-button text="Explore Diaries" variant="primary" [wide]="true">
+                        <svg slot="icon-right" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </app-action-button>
                 </div>
-            </div>
+            </app-themed-card>
 
             <!-- Memos Card -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:scale-105"
-                (click)="navigateToMemos()">
-                <div class="card-body text-center">
-                    <div class="flex justify-center mb-4">
-                        <div class="bg-secondary/10 p-4 rounded-full">
-                            <svg class="w-12 h-12 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <app-themed-card (onClick)="navigateToMemos()">
+                <div class="text-center">
+                    <div class="avatar mb-4">
+                        <div class="w-16 rounded-full gradient-bg-alt p-3 shadow-glow">
+                            <svg class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
                     </div>
-                    <h2 class="card-title text-2xl justify-center mb-2">Quick Memos</h2>
-                    <p class="text-base-content/70 mb-6">
-                        Jot down quick notes, ideas, and reminders for easy access later.
-                    </p>
-                    <div class="card-actions justify-center">
-                        <button class="btn btn-secondary btn-wide">
-                            View Memos
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Quick Memos</h2>
+                    <p class="text-muted mb-4">Jot down quick notes, ideas, and reminders for easy access later</p>
+                    <app-action-button text="View Memos" variant="secondary" [wide]="true">
+                        <svg slot="icon-right" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </app-action-button>
                 </div>
-            </div>
+            </app-themed-card>
+
+            <!-- Public Diaries Card -->
+            <app-themed-card (onClick)="navigateToPublic()">
+                <div class="text-center">
+                    <div class="avatar mb-4">
+                        <div class="w-16 rounded-full gradient-bg-secondary p-3 shadow-glow">
+                            <svg class="w-full h-full text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fill-rule="evenodd"
+                                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Public Diaries</h2>
+                    <p class="text-muted mb-4">Explore public diaries shared by the community</p>
+                    <app-action-button text="Explore Community" variant="accent" [wide]="true">
+                        <svg slot="icon-right" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </app-action-button>
+                </div>
+            </app-themed-card>
+
         </div>
     </div>
 </div>

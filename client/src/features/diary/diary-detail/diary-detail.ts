@@ -5,13 +5,14 @@ import { DiaryService } from '../../../core/services/diary-service';
 import { EntryService } from '../../../core/services/entry-service';
 import { Diary, DiaryUpdate } from '../../../types/diary';
 import { Entry, CreateEntry } from '../../../types/entry';
+import { Chip } from '../../../shared';
 
 type ViewMode = 'grid' | 'list';
 type SortOption = 'newest' | 'oldest' | 'alphabetical';
 
 @Component({
   selector: 'app-diary-detail',
-  imports: [FormsModule],
+  imports: [FormsModule, Chip],
   templateUrl: './diary-detail.html',
   styleUrl: './diary-detail.css'
 })

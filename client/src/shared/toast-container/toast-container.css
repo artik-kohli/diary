@@ -1,0 +1,70 @@
+/* Toast Container Styles */
+.toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 400px;
+    width: auto;
+}
+
+.alert {
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--border-radius);
+}
+
+/* Animation classes */
+.animate-slide-in-up {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .toast {
+        left: 1rem;
+        right: 1rem;
+        max-width: none;
+    }
+
+    .alert {
+        font-size: 0.875rem;
+    }
+}
+
+/* Theme integration */
+.theme-morning .alert {
+    backdrop-filter: blur(15px);
+    box-shadow: var(--shadow-card), 0 0 20px rgba(249, 115, 22, 0.1);
+}
+
+.theme-afternoon .alert {
+    backdrop-filter: blur(15px);
+    box-shadow: var(--shadow-card), 0 0 20px rgba(14, 165, 233, 0.1);
+}
+
+.theme-evening .alert {
+    backdrop-filter: blur(15px);
+    box-shadow: var(--shadow-card), 0 0 25px rgba(245, 158, 11, 0.15);
+}
+
+.theme-night .alert {
+    backdrop-filter: blur(15px);
+    box-shadow: var(--shadow-card), 0 0 30px rgba(139, 92, 246, 0.2);
+}

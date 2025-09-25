@@ -1,0 +1,30 @@
+/* Themed Card Component */
+:host {
+    display: block;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.card-sm {
+    max-width: 300px;
+}
+
+.card-lg {
+    max-width: 500px;
+}
+
+.card-xl {
+    max-width: 600px;
+}
+
+.card {
+    background: var(--color-base-100);
+    border-color: var(--border-color);
+}
+
+.card:hover {
+    border-color: var(--color-primary);
+}

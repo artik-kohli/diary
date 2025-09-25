@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { DiaryService } from '../../../core/services/diary-service';
 import { AuthService } from '../../../core/services/auth-service';
 import { Diary } from '../../../types/diary';
+import { ToastService, ActionButton, Chip, ThemedCard, LoadingSpinner, EmptyState } from '../../../shared';
 
 type DiaryFilter = 'my' | 'shared' | 'public';
 
 @Component({
   selector: 'app-diary-list',
-  imports: [],
+  imports: [ActionButton, Chip, ThemedCard, LoadingSpinner, EmptyState],
   templateUrl: './diary-list.html',
   styleUrl: './diary-list.css'
 })
@@ -16,6 +17,7 @@ export class DiaryList implements OnInit {
   private diaryService = inject(DiaryService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   protected allUserDiaries = signal<Diary[]>([]);
   protected allPublicDiaries = signal<Diary[]>([]);
@@ -76,6 +78,7 @@ export class DiaryList implements OnInit {
       error: (error) => {
         this.error.set('Failed to load diaries. Please try again.');
         this.loading.set(false);
+        this.toastService.error('Failed to load your diaries. Please check your connection.');
         console.error('Error loading diaries:', error);
       }
     });
@@ -93,6 +96,7 @@ export class DiaryList implements OnInit {
       error: (error) => {
         this.error.set('Failed to load public diaries. Please try again.');
         this.loading.set(false);
+        this.toastService.error('Failed to load public diaries. Please check your connection.');
         console.error('Error loading public diaries:', error);
       }
     });
@@ -103,6 +107,7 @@ export class DiaryList implements OnInit {
   }
 
   protected openDiary(diary: Diary): void {
+    this.toastService.success(`Opening "${diary.title}"...`);
     if (diary.isPublic) {
       this.router.navigateByUrl(`/diary/public/${diary.id}`);
     } else {
@@ -112,7 +117,13 @@ export class DiaryList implements OnInit {
 
   protected createNewDiary(): void {
     // TODO: Implement create diary modal or navigate to create page
-    console.log('Create new diary');
+    this.toastService.info('Diary creation feature coming soon!', {
+      duration: 3000,
+      action: {
+        text: 'Learn More',
+        handler: () => console.log('Navigate to documentation')
+      }
+    });
   }
 
   protected formatDate(dateString: string): string {

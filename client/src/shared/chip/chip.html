@@ -1,0 +1,16 @@
+<div class="badge" [class.badge-success]="variant() === 'success'" [class.badge-info]="variant() === 'info'"
+    [class.badge-warning]="variant() === 'warning'" [class.badge-error]="variant() === 'error'"
+    [class.badge-neutral]="variant() === 'neutral'" [class.badge-ghost]="variant() === 'ghost'"
+    [class.badge-xs]="size() === 'xs'" [class.badge-sm]="size() === 'sm'" [class.badge-lg]="size() === 'lg'"
+    [class.badge-xl]="size() === 'xl'" [class.opacity-50]="disabled()">
+    <ng-content select="[slot=icon]"></ng-content>
+    {{ text() }}
+    @if (removable() && !disabled()) {
+    <button class="ml-1 hover:text-error transition-colors duration-200" (click)="onRemove.emit()" type="button"
+        aria-label="Remove">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+    }
+</div>

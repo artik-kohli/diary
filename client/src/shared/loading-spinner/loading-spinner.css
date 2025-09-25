@@ -1,0 +1,8 @@
+/* Loading Spinner Component */
+:host {
+    display: inline-block;
+}
+
+.loading {
+    color: var(--color-primary);
+}

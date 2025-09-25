@@ -1,0 +1,8 @@
+<div class="card glass-effect transition-all duration-300 cursor-pointer border border-base-200 hover:border-primary/30"
+    [class.hover-lift]="hoverable()" [class.card-sm]="size() === 'sm'" [class.card-lg]="size() === 'lg'"
+    [class.card-xl]="size() === 'xl'" (click)="onClick.emit()">
+    <div class="card-body" [class.p-4]="size() === 'sm'" [class.p-6]="size() === 'md' || !size()"
+        [class.p-8]="size() === 'lg' || size() === 'xl'">
+        <ng-content></ng-content>
+    </div>
+</div>

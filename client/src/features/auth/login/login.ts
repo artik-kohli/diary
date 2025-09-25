@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth-service';
-import { TextInput } from "../../../shared/text-input/text-input";
+import { TextInput, ActionButton, ToastService } from '../../../shared';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, TextInput],
+  imports: [ReactiveFormsModule, TextInput, ActionButton],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
@@ -14,6 +14,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   loginForm: FormGroup = this.fb.group({
     username: ['', Validators.required],
@@ -24,17 +25,23 @@ export class Login {
   errorMessage = signal('');
 
   onSubmit(): void {
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      this.toastService.warning('Please fill in all required fields correctly.');
+      return;
+    }
 
     this.isSubmitting.set(true);
     this.errorMessage.set('');
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
+      next: (response) => {
+        this.toastService.success(`Welcome back, ${response.displayName}!`);
         this.router.navigateByUrl('/');
       },
       error: error => {
-        this.errorMessage.set(error.error || 'Invalid username or password');
+        const errorMsg = error.error || 'Invalid username or password';
+        this.errorMessage.set(errorMsg);
+        this.toastService.error(errorMsg);
         this.isSubmitting.set(false);
       }
     })

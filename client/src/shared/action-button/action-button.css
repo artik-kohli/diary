@@ -1,0 +1,25 @@
+/* Action Button Component Styles */
+:host {
+    display: inline-block;
+}
+
+.btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Icon spacing */
+.btn svg {
+    transition: transform 0.2s ease;
+}
+
+.btn:hover svg {
+    transform: translateX(2px);
+}
