@@ -31,6 +31,17 @@ public class EntryController(
         return Ok(entries.Select(e => e.ToDto()));
     }
 
+    [HttpGet("public/{diaryId}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<EntryDto>>> GetPublicEntries(int diaryId)
+    {
+        var entries = await entryRepository.GetPublicDiaryEntriesAsync(diaryId);
+
+        if (entries == null) return NotFound("Public diary not found");
+
+        return Ok(entries.Select(e => e.ToDto()));
+    }
+
     [HttpPost("{diaryId}")]
     public async Task<ActionResult<EntryDto>> CreateEntry(int diaryId, [FromBody] CreateEntryDto createEntryDto)
     {

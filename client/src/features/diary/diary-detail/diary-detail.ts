@@ -35,6 +35,7 @@ export class DiaryDetail implements OnInit {
   protected showNewEntryForm = signal(false);
   protected showEditDiaryForm = signal(false);
   protected showShareDialog = signal(false);
+  protected isPublicView = signal(false);
 
   // Form data
   protected newEntryContent = signal('');
@@ -98,19 +99,29 @@ export class DiaryDetail implements OnInit {
     };
   });
 
+  protected canEdit = computed(() => !this.isPublicView());
+
   ngOnInit(): void {
     const diaryId = Number(this.route.snapshot.paramMap.get('id'));
+    const isPublicRoute = this.route.snapshot.url.some(segment => segment.path === 'public');
+
+    this.isPublicView.set(isPublicRoute);
+
     if (diaryId) {
-      this.loadDiary(diaryId);
-      this.loadEntries(diaryId);
+      this.loadDiary(diaryId, isPublicRoute);
+      this.loadEntries(diaryId, isPublicRoute);
     }
   }
 
-  private loadDiary(id: number): void {
+  private loadDiary(id: number, isPublic: boolean = false): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.diaryService.getDiary(id).subscribe({
+    const diaryRequest = isPublic
+      ? this.diaryService.getPublicDiary(id)
+      : this.diaryService.getDiary(id);
+
+    diaryRequest.subscribe({
       next: (diary) => {
         this.diary.set(diary);
         this.editDiaryTitle.set(diary.title);
@@ -124,12 +135,16 @@ export class DiaryDetail implements OnInit {
     });
   }
 
-  private loadEntries(diaryId: number): void {
-    this.entryService.getEntries(diaryId).subscribe({
-      next: (entries) => {
+  private loadEntries(diaryId: number, isPublic: boolean = false): void {
+    const entriesRequest = isPublic
+      ? this.entryService.getPublicEntries(diaryId)
+      : this.entryService.getEntries(diaryId);
+
+    entriesRequest.subscribe({
+      next: (entries: Entry[]) => {
         this.entries.set(entries);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading entries:', error);
       }
     });
@@ -145,6 +160,7 @@ export class DiaryDetail implements OnInit {
   }
 
   protected openNewEntryForm(): void {
+    if (!this.canEdit()) return;
     this.showNewEntryForm.set(true);
     this.newEntryContent.set('');
   }
@@ -155,6 +171,7 @@ export class DiaryDetail implements OnInit {
   }
 
   protected createEntry(): void {
+    if (!this.canEdit()) return;
     const content = this.newEntryContent().trim();
     if (!content || !this.diary()) return;
 
@@ -174,6 +191,7 @@ export class DiaryDetail implements OnInit {
   }
 
   protected openEditDiaryForm(): void {
+    if (!this.canEdit()) return;
     this.showEditDiaryForm.set(true);
   }
 
@@ -183,6 +201,7 @@ export class DiaryDetail implements OnInit {
   }
 
   protected updateDiary(): void {
+    if (!this.canEdit()) return;
     const title = this.editDiaryTitle().trim();
     if (!title || !this.diary()) return;
 
@@ -198,7 +217,7 @@ export class DiaryDetail implements OnInit {
   }
 
   protected togglePublicStatus(): void {
-    if (!this.diary()) return;
+    if (!this.canEdit() || !this.diary()) return;
 
     const isPublic = !this.diary()!.isPublic;
     this.diaryService.updateDiary(this.diary()!.id, { isPublic }).subscribe({
@@ -220,7 +239,10 @@ export class DiaryDetail implements OnInit {
   }
 
   protected openEntry(entry: Entry): void {
-    this.router.navigateByUrl(`/diary/${this.diary()!.id}/e/${entry.id}`);
+    const diaryPath = this.isPublicView()
+      ? `/diary/public/${this.diary()!.id}`
+      : `/diary/${this.diary()!.id}`;
+    this.router.navigateByUrl(`${diaryPath}/e/${entry.id}`);
   }
 
   protected formatDate(dateString: string): string {
@@ -242,7 +264,19 @@ export class DiaryDetail implements OnInit {
     return content.length > length ? content.substring(0, length) + '...' : content;
   }
 
+  protected getAuthorName(): string {
+    const diary = this.diary();
+    if (!diary) return 'Unknown Author';
+    return diary.displayName || diary.userName || 'Unknown Author';
+  }
+
+  protected getAuthorInitial(): string {
+    return this.getAuthorName().charAt(0).toUpperCase();
+  }
+
   protected goBack(): void {
+    // For public diaries, we might want to navigate back to public diaries list
+    // For now, navigate to general diaries page
     this.router.navigateByUrl('/diaries');
   }
 }

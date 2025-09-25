@@ -35,8 +35,8 @@ public class DiaryController(
         return Ok(diaries.Select(d => d.ToDto()));
     }
 
-    [HttpGet("public/{id}")]
     [AllowAnonymous]
+    [HttpGet("public/{id}")]
     public async Task<ActionResult<DiaryDto>> GetPublicDiary(int id)
     {
         var diary = await diaryRepository.GetPublicDiaryByIdAsync(id);

@@ -3,6 +3,8 @@ import { Entry } from "./entry";
 export interface Diary {
     id: number;
     userId: string;
+    userName?: string;
+    displayName?: string;
     title: string;
     isPublic: boolean;
     createdAt: string;

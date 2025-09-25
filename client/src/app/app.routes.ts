@@ -23,7 +23,9 @@ export const routes: Routes = [
             { path: 'home', component: Home },
             { path: 'diaries', component: DiaryList },
             { path: 'diary/:id', component: DiaryDetail },
+            { path: 'diary/public/:id', component: DiaryDetail },
             { path: 'diary/:diaryId/e/:entryId', component: EntryDetail },
+            
             { path: 'memos', component: MemoList },
             { path: 'memo/:id', component: MemoDetail },
             { path: '**', redirectTo: '/home' }

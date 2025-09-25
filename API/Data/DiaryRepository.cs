@@ -37,6 +37,7 @@ public class DiaryRepository(DataContext context) : IDiaryRepository
         return Task.FromResult(context.Diaries
             .Where(d => d.IsPublic)
             .Include(d => d.Entries)
+            .Include(d => d.AppUser)
             .AsEnumerable());
     }
 
@@ -44,6 +45,7 @@ public class DiaryRepository(DataContext context) : IDiaryRepository
     {
         return await context.Diaries
             .Include(d => d.Entries)
+            .Include(d => d.AppUser)
             .FirstOrDefaultAsync(d => d.Id == diaryId && d.IsPublic);
     }
 

@@ -15,6 +15,9 @@ public static class DiaryExtensions
             IsPublic = diary.IsPublic,
             CreatedAt = diary.CreatedAt,
             UpdatedAt = diary.UpdatedAt,
+            UserId = diary.AppUserId,
+            UserName = diary.AppUser?.UserName,
+            DisplayName = diary.AppUser?.DisplayName,
             Entries = diary.Entries?.Select(e => new EntryDto
             {
                 Id = e.Id,
