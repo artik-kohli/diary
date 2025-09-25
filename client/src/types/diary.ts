@@ -2,6 +2,7 @@ import { Entry } from "./entry";
 
 export interface Diary {
     id: number;
+    userId: string;
     title: string;
     isPublic: boolean;
     createdAt: string;
@@ -14,7 +15,7 @@ export interface CreateDiary {
     isPublic?: boolean;
 }
 
-export interface UpdateDiary {
+export interface DiaryUpdate {
     title?: string;
     isPublic?: boolean;
 }

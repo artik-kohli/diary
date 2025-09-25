@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DiaryService } from '../../../core/services/diary-service';
 import { EntryService } from '../../../core/services/entry-service';
-import { Diary } from '../../../types/diary';
+import { Diary, DiaryUpdate } from '../../../types/diary';
 import { Entry, CreateEntry } from '../../../types/entry';
 
 type ViewMode = 'grid' | 'list';
@@ -187,8 +187,8 @@ export class DiaryDetail implements OnInit {
     if (!title || !this.diary()) return;
 
     this.diaryService.updateDiary(this.diary()!.id, { title }).subscribe({
-      next: (updatedDiary) => {
-        this.diary.set(updatedDiary);
+      next: () => {
+        this.diary.set({ ...this.diary()!, title });
         this.closeEditDiaryForm();
       },
       error: (error) => {
@@ -202,8 +202,8 @@ export class DiaryDetail implements OnInit {
 
     const isPublic = !this.diary()!.isPublic;
     this.diaryService.updateDiary(this.diary()!.id, { isPublic }).subscribe({
-      next: (updatedDiary) => {
-        this.diary.set(updatedDiary);
+      next: () => {
+        this.diary.set({ ...this.diary()!, isPublic });
       },
       error: (error) => {
         console.error('Error updating diary visibility:', error);

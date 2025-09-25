@@ -68,6 +68,26 @@ public class EntryRepository(
         return entry;
     }
 
+    public async Task<IEnumerable<Entry>> GetPublicDiaryEntriesAsync(int diaryId)
+    {
+        var diary = context.Diaries
+            .FirstOrDefault(d => d.Id == diaryId && d.IsPublic);
+
+        if (diary == null) return null!;
+
+        return await context.Entries
+            .Where(e => e.DiaryId == diaryId)
+            .OrderByDescending(e => e.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<Entry?> GetPublicEntryByIdAsync(int entryId)
+    {
+        return await context.Entries
+            .Include(e => e.Diary)
+            .FirstOrDefaultAsync(e => e.Id == entryId && e.Diary.IsPublic);
+    }
+
     public async Task<bool> UpdateEntryAsync(int id, Entry updatedEntry, string userId)
     {
         var entry = await context.Entries

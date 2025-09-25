@@ -32,6 +32,21 @@ public class DiaryRepository(DataContext context) : IDiaryRepository
             .FirstOrDefaultAsync(d => d.Id == diaryId && d.AppUserId == userId);
     }
 
+    public Task<IEnumerable<Diary>> GetPublicDiariesAsync()
+    {
+        return Task.FromResult(context.Diaries
+            .Where(d => d.IsPublic)
+            .Include(d => d.Entries)
+            .AsEnumerable());
+    }
+
+    public async Task<Diary?> GetPublicDiaryByIdAsync(int diaryId)
+    {
+        return await context.Diaries
+            .Include(d => d.Entries)
+            .FirstOrDefaultAsync(d => d.Id == diaryId && d.IsPublic);
+    }
+
     public async Task<IEnumerable<Diary>> GetUserDiariesAsync(string userId)
     {
         return await context.Diaries

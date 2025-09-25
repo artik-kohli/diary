@@ -32,7 +32,7 @@ export class DiaryList implements OnInit {
       case 'my':
         // For now, assume all fetched diaries are user's own diaries
         // This logic can be enhanced when user ownership info is added to Diary model
-        return diaries.filter(diary => !diary.isPublic);
+        return diaries;
       case 'shared':
         // Placeholder for shared diaries - will need backend support
         return [];
@@ -47,7 +47,7 @@ export class DiaryList implements OnInit {
   protected counts = computed(() => {
     const diaries = this.allDiaries();
     return {
-      my: diaries.filter(diary => !diary.isPublic).length,
+      my: diaries.length,
       shared: 0, // Placeholder
       public: diaries.filter(diary => diary.isPublic).length
     };

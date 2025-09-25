@@ -26,6 +26,26 @@ public class DiaryController(
         return Ok(diaries.Select(d => d.ToDto()));
     }
 
+    [HttpGet("public")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<DiaryDto>>> GetPublicDiaries()
+    {
+        var diaries = await diaryRepository.GetPublicDiariesAsync();
+
+        return Ok(diaries.Select(d => d.ToDto()));
+    }
+
+    [HttpGet("public/{id}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<DiaryDto>> GetPublicDiary(int id)
+    {
+        var diary = await diaryRepository.GetPublicDiaryByIdAsync(id);
+
+        if (diary == null) return NotFound();
+
+        return Ok(diary.ToDto());
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<DiaryDto>> GetDiary(int id)
     {
@@ -67,8 +87,8 @@ public class DiaryController(
         if (diary == null) return NotFound();
 
         // TODO: Fix this and add unit of work pattern
-        diary.Title = updateDiaryDto.Title;
-        diary.IsPublic = updateDiaryDto.IsPublic;
+        diary.Title = updateDiaryDto.Title ?? diary.Title;
+        diary.IsPublic = updateDiaryDto.IsPublic ?? diary.IsPublic;
 
         var result = await diaryRepository.UpdateDiaryAsync(id, diary, userId!);
 

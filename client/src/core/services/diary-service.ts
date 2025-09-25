@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { CreateDiary, Diary, UpdateDiary } from '../../types/diary';
+import { CreateDiary, Diary, DiaryUpdate } from '../../types/diary';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,14 @@ export class DiaryService {
     return this.http.get<Diary[]>(this.baseUrl + 'diary');
   }
 
+  getPublicDiaries() {
+    return this.http.get<Diary[]>(this.baseUrl + 'diary/public');
+  }
+
+  getPublicDiary(id: number) {
+    return this.http.get<Diary>(this.baseUrl + `diary/public/${id}`);
+  }
+
   getDiary(id: number) {
     return this.http.get<Diary>(this.baseUrl + `diary/${id}`);
   }
@@ -23,7 +31,7 @@ export class DiaryService {
     return this.http.post<Diary>(this.baseUrl + 'diary', diary);
   }
 
-  updateDiary(id: number, diary: UpdateDiary) {
+  updateDiary(id: number, diary: DiaryUpdate) {
     return this.http.put<Diary>(this.baseUrl + `diary/${id}`, diary);
   }
 

@@ -5,8 +5,7 @@ namespace API.DTOs;
 
 public class UpdateDiaryDto
 {
-    [Required]
     [MaxLength(100)]
-    public string Title { get; set; } = null!;
-    public bool IsPublic { get; set; } = false;
+    public string? Title { get; set; }
+    public bool? IsPublic { get; set; }
 }
